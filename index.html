@@ -227,7 +227,7 @@
             <div class="order-number-subtitle"> <span class="text-bold">Số Đơn Hàng:</span> <span id="order-number"></span> </div>
             <div class="customer-details">
                 <div class="customer-details-row">
-                    <span><span class="text-bold">Khách Hàng:</span> <span id="customer-name"></span></span>
+                    <span><span class="text-bold">Khách Hàng:</span> <span id="customer-name"></span> <span id="phone-container" style="display:none;">- <span class="text-bold">SĐT:</span> <span id="customer-phone"></span></span></span>
                     <span><span class="text-bold">Ngày Đặt:</span> <span id="order-date"></span></span>
                 </div>
                 <div class="customer-address-row">
@@ -380,6 +380,15 @@
                 }
 
                 document.getElementById('order-number').textContent = data.orderNumber || 'N/A'; document.getElementById('order-date').textContent = formatDate(data.orderDate); document.getElementById('customer-name').textContent = data.customerName || 'Khách lẻ';
+                
+                // LOGIC BỔ SUNG SĐT
+                if(data.customerPhone) {
+                    document.getElementById('customer-phone').textContent = data.customerPhone;
+                    document.getElementById('phone-container').style.display = 'inline';
+                } else {
+                    document.getElementById('phone-container').style.display = 'none';
+                }
+
                 const addressRow = document.querySelector('.customer-address-row');
                 if (data.diaChiKhachHang) {
                     document.getElementById('customer-address').textContent = data.diaChiKhachHang;
@@ -387,6 +396,7 @@
                 } else {
                     addressRow.style.display = 'none';
                 }
+                
                 document.getElementById('print-time').textContent = new Date().toLocaleString('vi-VN');
                 document.getElementById('subtotal').textContent = formatCurrency(data.subtotal) + ' VNĐ';
                 document.getElementById('discount').textContent = formatCurrency(data.discount) + ' VNĐ';
@@ -406,7 +416,10 @@
 
         function loadDataFromUrl() {
             const data = {
-                orderNumber: getUrlParameter('so_don_hang'), orderDate: getUrlParameter('ngay_dat'), customerName: getUrlParameter('khach_hang'), diaChiKhachHang: getUrlParameter('dia_chi_khach_hang'),
+                orderNumber: getUrlParameter('so_don_hang'), orderDate: getUrlParameter('ngay_dat'), 
+                customerName: getUrlParameter('Tên khách hàng') || getUrlParameter('ten_khach_hang') || getUrlParameter('khach_hang'), 
+                customerPhone: getUrlParameter('Số điện thoại') || getUrlParameter('so_dien_thoai'), 
+                diaChiKhachHang: getUrlParameter('Địa chỉ') || getUrlParameter('dia_chi') || getUrlParameter('dia_chi_khach_hang'),
                 subtotal: getUrlParameter('thanh_tien'), discount: getUrlParameter('giam_gia'), totalAfterDiscount: getUrlParameter('tong_tien_sau_ck'),
                 notes: getUrlParameter('ghi_chu'), productsJson: getUrlParameter('products'), bankName: getUrlParameter('bank_name'), accountNumber: getUrlParameter('account_number'), accountHolder: getUrlParameter('account_holder'),
                 tenCongTy: getUrlParameter('ten_cong_ty'), diaChi: getUrlParameter('dia_chi'), soDienThoai: getUrlParameter('so_dien_thoai'), email: getUrlParameter('email'), website: getUrlParameter('website')
@@ -440,7 +453,7 @@
             const subtotal = 5700000; const discount = 200000; const totalAfterDiscount = subtotal - discount;
             const data = {
                 tenCongTy: 'CÔNG TY TNHH CHẾ BIẾN HẢI SẢN BA LÀNG', diaChi: 'Số 05, đường Đỗ Đại, TDP Thượng Hải, phường Tĩnh Gia, Thanh Hóa', soDienThoai: '0976459995', email: 'balangth@balang.com.vn', website: 'www.balang.com.vn',
-                orderNumber: 'DEMO-EMS-001', orderDate: new Date().toISOString(), customerName: 'Khách hàng Demo', diaChiKhachHang: '25/10 Hậu Giang, Phường 4, Quận Tân Bình, TP.HCM',
+                orderNumber: 'DEMO-EMS-001', orderDate: new Date().toISOString(), customerName: 'Khách hàng Demo', customerPhone: '0988776655', diaChiKhachHang: '25/10 Hậu Giang, Phường 4, Quận Tân Bình, TP.HCM',
                 subtotal: subtotal.toString(), discount: discount.toString(), totalAfterDiscount: totalAfterDiscount.toString(),
                 notes: 'MST: 0316870151. Đại diện pháp luật: Nguyễn Tấn Hiền.', productsJson: JSON.stringify(demoProducts),
                 bankName: 'ACB', accountNumber: '181119878', accountHolder: 'CONG TY TNHH GIAI PHAP SO EMS'
