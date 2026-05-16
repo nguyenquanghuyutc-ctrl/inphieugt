@@ -73,7 +73,10 @@
         .format-80mm .order-qr-code img { width: 32px; height: 32px; }
         .format-80mm .label-email { display: none; }
         .format-80mm .main-title-container { text-align: center; font-size: 18px; font-weight: bold; margin: 15px 0; } .format-80mm .order-number-subtitle { font-size: 11px; text-align: center; margin-top: -10px; margin-bottom: 10px;} .format-80mm .customer-details { margin-bottom: 15px; font-size: 11px; }
-        .format-80mm .customer-address-row { display: none; }
+        
+        /* ĐÃ MỞ KHÓA HIỂN THỊ ĐỊA CHỈ TRÊN KHỔ 80MM CHO SẾP */
+        .format-80mm .customer-address-row { display: block; margin-bottom: 3px; }
+        
         .format-80mm .customer-details-row { display: flex; justify-content: space-between; margin-bottom: 3px; } .format-80mm .row-stack-on-receipt { display: block; } .format-80mm .row-stack-on-receipt > span { display: block; margin-bottom: 3px; } .format-80mm .products-table { font-size: 10px; } .format-80mm .products-table th, .format-80mm .products-table td { padding: 3px 2px; border-bottom: 1px solid #ddd; word-break: break-all; text-align: left;}
         .format-80mm .col-stt, .format-80mm .col-msp, .format-80mm .col-dvt, .format-80mm .col-ghi-chu { display: none; }
         .format-80mm .products-table .col-sanpham[data-msp]:before { content: attr(data-msp) " | "; font-weight: bold; }
@@ -193,7 +196,6 @@
 
     <div class="print-options no-print">
         <div class="options-row">
-            <!-- Thêm class format-btn để quản lý trạng thái active -->
             <button class="btn-80mm format-btn" onclick="changeFormat('80mm')">80mm</button>
             <button class="btn-a4 format-btn active" onclick="changeFormat('a4')" title="Khổ A4 dọc">A4<span class="icon icon-a4" style="color:white; border-color:white;"></span></button>
             <button class="btn-a5 format-btn" onclick="changeFormat('a5')" title="Khổ A5 ngang">A5<span class="icon icon-a5" style="border-color:currentColor;"></span></button>
@@ -303,18 +305,15 @@
         async function convertImageToBase64(imgElement) { if (!imgElement || !imgElement.src || imgElement.src.startsWith('data:image')) { return; } const originalSrc = imgElement.src; const processBlob = (blob) => new Promise((resolve, reject) => { const reader = new FileReader(); reader.onloadend = () => { imgElement.src = reader.result; resolve(reader.result); }; reader.onerror = reject; reader.readAsDataURL(blob); }); try { const response = await fetch(originalSrc); if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`); await processBlob(await response.blob()); } catch (error) { console.warn(`Direct image fetch failed, trying proxy. Error: ${error.message}`); const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(originalSrc)}`; try { const proxyResponse = await fetch(proxyUrl); if (!proxyResponse.ok) throw new Error(`Proxy HTTP error! status: ${proxyResponse.status}`); await processBlob(await proxyResponse.blob()); } catch (proxyError) { console.error(`Failed to fetch image via proxy. Error: ${proxyError.message}`); } } }
         async function downloadPDF() { const element = document.querySelector('.bill-container'); const printOptionsPanel = document.querySelector('.print-options'); const orderNumber = document.getElementById('order-number').textContent || 'unknown'; const filename = `HoaDon-${orderNumber}.pdf`; printOptionsPanel.style.display = 'none'; document.body.classList.add('export-mode'); const allImages = Array.from(document.querySelectorAll('#logo-img, #qr-code-container img, #order-qr-code img')); await Promise.all(allImages.map(img => convertImageToBase64(img))); let jspdfConfig = { unit: 'mm', format: 'a4', orientation: 'portrait' }; if (document.body.classList.contains('format-a5')) { jspdfConfig = { unit: 'mm', format: 'a5', orientation: 'landscape' }; } else if (document.body.classList.contains('format-80mm')) { jspdfConfig = { unit: 'mm', format: [80, 297], orientation: 'portrait' }; } const opt = { margin: 0, filename: filename, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 3, useCORS: true, logging: false, backgroundColor: '#ffffff' }, jsPDF: jspdfConfig, pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } }; try { await html2pdf().from(element).set(opt).save(); } catch (error) { console.error("Error creating PDF:", error); alert("Đã có lỗi xảy ra khi tạo file PDF. Vui lòng thử lại."); } finally { document.body.classList.remove('export-mode'); printOptionsPanel.style.display = 'flex'; } }
         
-        // --- NÂNG CẤP TỐI THƯỢNG: Hàm lấy dữ liệu URL bằng MẢNG (Array) không phân biệt hoa thường ---
+        // --- HÀM TÌM KIẾM PARAM TỪ URL BẰNG MẢNG (GIỮ NGUYÊN HOẠT ĐỘNG CHUẨN) ---
         function getUrlParameter(keys) {
             const urlParams = new URLSearchParams(window.location.search);
-            // Ép kiểu về mảng nếu đầu vào chỉ là 1 chuỗi string (tương thích ngược với code cũ)
             if (typeof keys === 'string') keys = [keys];
             
-            // Bước 1: Quét ưu tiên các key chuẩn xác 100%
             for (let key of keys) {
                 if (urlParams.has(key)) return urlParams.get(key) || '';
             }
             
-            // Bước 2: Quét dự phòng (xóa khoảng trắng thừa, không phân biệt hoa thường)
             for (let [k, v] of urlParams.entries()) {
                 let cleanK = k.toLowerCase().trim();
                 for (let key of keys) {
@@ -384,7 +383,7 @@
                 try { if (finalWebsite && finalWebsite.startsWith('{') && finalWebsite.endsWith('}')) { const websiteObj = JSON.parse(finalWebsite); finalWebsite = websiteObj.Url || finalWebsite; } } catch (e) {}
                 const bankCode = getBankCodeFromName(data.bankName);
                 
-                // Trả lại đúng form gốc không chỉnh sửa
+                // GIỮ NGUYÊN FORM GỐC CHỨA INFO CÔNG TY
                 document.getElementById('ten_cong_ty').textContent = data.tenCongTy || 'Tên Công Ty';
                 document.getElementById('dia_chi').textContent = data.diaChi || 'N/A'; 
                 document.getElementById('so_dien_thoai').textContent = data.soDienThoai || 'N/A'; 
@@ -406,7 +405,7 @@
                 document.getElementById('order-date').textContent = formatDate(data.orderDate); 
                 document.getElementById('customer-name').textContent = data.customerName || 'Khách lẻ';
                 
-                // LOGIC BỔ SUNG SĐT SẾP YÊU CẦU
+                // SĐT KHÁCH HÀNG
                 if(data.customerPhone) {
                     document.getElementById('customer-phone').textContent = data.customerPhone;
                     document.getElementById('phone-container').style.display = 'inline';
@@ -414,6 +413,7 @@
                     document.getElementById('phone-container').style.display = 'none';
                 }
 
+                // ĐỊA CHỈ KHÁCH HÀNG
                 const addressRow = document.querySelector('.customer-address-row');
                 if (data.diaChiKhachHang) {
                     document.getElementById('customer-address').textContent = data.diaChiKhachHang;
@@ -443,31 +443,32 @@
             }
         }
 
+        // --- CÁCH LY TUYỆT ĐỐI KEY DỮ LIỆU CÔNG TY & KHÁCH HÀNG ---
         function loadDataFromUrl() {
             const data = {
-                orderNumber: getUrlParameter(['so_don_hang', 'Số đơn hàng']), 
-                orderDate: getUrlParameter(['ngay_dat', 'Ngày đặt']), 
+                orderNumber: getUrlParameter(['Số đơn hàng', 'so_don_hang']), 
+                orderDate: getUrlParameter(['Ngày đặt', 'ngay_dat']), 
                 
-                // MẢNG ĐA TẦNG: Bắt cả tên cột trên AppSheet lẫn key rút gọn cũ
-                customerName: getUrlParameter(['Tên khách hàng', 'Khách hàng', 'ten_khach_hang', 'khach_hang']), 
-                customerPhone: getUrlParameter(['Số điện thoại', 'so_dien_thoai']), 
-                diaChiKhachHang: getUrlParameter(['Địa chỉ', 'dia_chi_khach_hang', 'dia_chi_giao_hang']),
+                // THÔNG TIN KHÁCH HÀNG TỪ APPSHEET
+                customerName: getUrlParameter(['Tên khách hàng', 'Khách hàng', 'ten_khach_hang']), 
+                customerPhone: getUrlParameter(['Số điện thoại', 'sdt_khach_hang']), // TUYỆT ĐỐI TÁCH BIỆT
+                diaChiKhachHang: getUrlParameter(['Địa chỉ', 'dia_chi_khach_hang']), // TUYỆT ĐỐI TÁCH BIỆT
                 
-                subtotal: getUrlParameter(['thanh_tien', 'Thành tiền']), 
-                discount: getUrlParameter(['giam_gia', 'Giảm giá']), 
-                totalAfterDiscount: getUrlParameter(['tong_tien_sau_ck', 'Tổng tiền sau ck']),
-                notes: getUrlParameter(['ghi_chu', 'Ghi chú']), 
-                productsJson: getUrlParameter(['products', 'Sản phẩm']), 
-                bankName: getUrlParameter(['bank_name', 'Ngân hàng']), 
-                accountNumber: getUrlParameter(['account_number', 'Số tài khoản']), 
-                accountHolder: getUrlParameter(['account_holder', 'Chủ tài khoản']),
+                subtotal: getUrlParameter(['Thành tiền', 'thanh_tien']), 
+                discount: getUrlParameter(['Giảm giá', 'giam_gia']), 
+                totalAfterDiscount: getUrlParameter(['Tổng tiền sau ck', 'tong_tien_sau_ck']),
+                notes: getUrlParameter(['Ghi chú', 'ghi_chu']), 
+                productsJson: getUrlParameter(['Sản phẩm', 'products']), 
+                bankName: getUrlParameter(['Ngân hàng', 'bank_name']), 
+                accountNumber: getUrlParameter(['Số tài khoản', 'account_number']), 
+                accountHolder: getUrlParameter(['Chủ tài khoản', 'account_holder']),
                 
-                // Cố định lại y nguyên tham số cho Thông tin công ty
-                tenCongTy: getUrlParameter(['ten_cong_ty', 'Tên công ty']), 
-                diaChi: getUrlParameter('dia_chi'), 
-                soDienThoai: getUrlParameter('so_dien_thoai'), 
-                email: getUrlParameter('email'), 
-                website: getUrlParameter('website')
+                // THÔNG TIN CÔNG TY (Chỉ nhận key riêng, chặn việc lấy nhầm "Số điện thoại" của khách)
+                tenCongTy: getUrlParameter(['Tên công ty', 'ten_cong_ty']), 
+                diaChi: getUrlParameter(['Địa chỉ công ty', 'dia_chi_cong_ty']), 
+                soDienThoai: getUrlParameter(['SĐT công ty', 'so_dien_thoai_cong_ty']), 
+                email: getUrlParameter(['Email', 'email']), 
+                website: getUrlParameter(['Website', 'website'])
             };
             return populateInvoice(data);
         }
