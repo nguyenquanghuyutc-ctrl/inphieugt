@@ -12,7 +12,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
-        /* --- NÂNG CẤP: IMPORT FONT HIỆN ĐẠI TỪ GOOGLE FONTS --- */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.8); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.3s; }
@@ -32,7 +31,7 @@
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #eef2f5; font-family: 'Inter', Arial, sans-serif; } /* ĐỔI FONT */
+        body { background: #eef2f5; font-family: 'Inter', Arial, sans-serif; }
         .bill-container { background: white; color: #333; position: relative; visibility: hidden; }
         .text-right { text-align: right; } .text-center { text-align: center; } .text-bold { font-weight: bold; } .company-name { font-weight: bold; }
         .error-message { color: red; font-size: 0.8em; padding: 10px; border: 1px dashed red; }
@@ -41,7 +40,6 @@
         .options-row { display: flex; justify-content: center; align-items: center; gap: 8px; }
         .print-options button { margin: 0; padding: 8px 12px; height: 44px; cursor: pointer; border: none; border-radius: 6px; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s ease-in-out; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; gap: 8px; }
         .print-options button:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.2); transform: translateY(-2px); filter: brightness(1.1); }
-        /* HIỆU ỨNG NÚT ACTIVE */
         .print-options button.format-btn { opacity: 0.6; }
         .print-options button.format-btn.active { opacity: 1; transform: scale(1.05); box-shadow: 0 4px 8px rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.5); }
 
@@ -55,7 +53,6 @@
         #website-link { color: inherit; text-decoration: none; }
         #website-link:hover { text-decoration: underline; color: #0056b3; }
 
-        /* --- STYLES CHO HÀNG KHUYẾN MẠI TẶNG KÈM --- */
         .promo-row { font-style: italic; background-color: #fafdf5 !important; }
         .promo-row .col-sanpham { font-weight: 500; color: #2e7d32; }
         .promo-badge { display: inline-flex; align-items: center; justify-content: center; background: #e8f5e9; color: #2e7d32; border: 0.5px solid #a5d6a7; font-size: 0.8em; padding: 2px 6px; border-radius: 4px; margin-left: 6px; font-style: normal; font-weight: 600; vertical-align: middle; }
@@ -74,7 +71,6 @@
         .format-80mm .label-email { display: none; }
         .format-80mm .main-title-container { text-align: center; font-size: 18px; font-weight: bold; margin: 15px 0; } .format-80mm .order-number-subtitle { font-size: 11px; text-align: center; margin-top: -10px; margin-bottom: 10px;} .format-80mm .customer-details { margin-bottom: 15px; font-size: 11px; }
         
-        /* CHỈNH DUY NHẤT DÒNG NÀY ĐỂ HIỆN ĐỊA CHỈ TRÊN 80MM */
         .format-80mm .customer-address-row { display: block; margin-bottom: 3px; }
         
         .format-80mm .customer-details-row { display: flex; justify-content: space-between; margin-bottom: 3px; } .format-80mm .row-stack-on-receipt { display: block; } .format-80mm .row-stack-on-receipt > span { display: block; margin-bottom: 3px; } .format-80mm .products-table { font-size: 10px; } .format-80mm .products-table th, .format-80mm .products-table td { padding: 3px 2px; border-bottom: 1px solid #ddd; word-break: break-all; text-align: left;}
@@ -92,7 +88,6 @@
         .format-80mm .products-table th.col-dongia::before { content: "Đơn\AGiá"; font-size: 10px; white-space: pre; }
         .format-80mm .products-table th.col-thanhtien::before { content: "Thành\ATiền"; font-size: 10px; white-space: pre; }
         
-        /* 80mm Promo Styling overrides for thermal printers */
         .format-80mm .promo-row { background-color: transparent !important; }
         .format-80mm .promo-row .col-sanpham { color: #000; }
         .format-80mm .promo-badge { font-size: 8px; padding: 1px 3px; border: 1px solid #000; color: #000; background: transparent; }
@@ -107,7 +102,6 @@
         .order-number-subtitle { text-align: center; font-size: 0.9em; color: #666; margin-bottom: 15px; } .format-a4 .customer-details, .format-a5 .customer-details, .format-a4-no-qr .customer-details { margin-bottom: 15px; margin-top: 10px; z-index: 2; position: relative; } .format-a4 .customer-details-row, .format-a5 .customer-details-row, .format-a4-no-qr .customer-details-row { display: flex; justify-content: space-between; padding: 4px 0; } .customer-address-row { padding: 4px 0; }
         .format-a4 .row-stack-on-receipt, .format-a5 .row-stack-on-receipt, .format-a4-no-qr .row-stack-on-receipt { display: none; }
         
-        /* Cải tiến Table A4/A5 */
         .format-a4 .products-table, .format-a5 .products-table, .format-a4-no-qr .products-table { border: 1px solid #dee2e6; border-radius: 4px; border-collapse: separate; border-spacing: 0; overflow: hidden; z-index: 2; position: relative; }
         .format-a4 .products-table th, .format-a4 .products-table td, .format-a5 .products-table th, .format-a5 .products-table td, .format-a4-no-qr .products-table th, .format-a4-no-qr .products-table td { border-bottom: 1px solid #dee2e6; border-right: 1px solid #dee2e6; vertical-align: middle; }
         .format-a4 .products-table th:last-child, .format-a4 .products-table td:last-child, .format-a5 .products-table th:last-child, .format-a5 .products-table td:last-child, .format-a4-no-qr .products-table th:last-child, .format-a4-no-qr .products-table td:last-child { border-right: none; }
@@ -229,20 +223,15 @@
             <div class="order-number-subtitle"> <span class="text-bold">Số Đơn Hàng:</span> <span id="order-number"></span> </div>
             <div class="customer-details">
                 <div class="customer-details-row">
-                    <span><span class="text-bold">Khách Hàng:</span> <span id="customer-name"></span><span id="phone-container" style="display:none;"> - <span class="text-bold">SĐT:</span> <span id="customer-phone"></span></span></span>
+                    <span><span class="text-bold">Khách Hàng:</span> <span id="customer-name"></span> <span id="phone-container" style="display:none;">- <span class="text-bold">SĐT:</span> <span id="customer-phone"></span></span></span>
                     <span><span class="text-bold">Ngày Đặt:</span> <span id="order-date"></span></span>
                 </div>
                 <div class="customer-address-row">
                     <span><span class="text-bold">Địa chỉ:</span> <span id="customer-address"></span></span>
                 </div>
-                
-                <div class="customer-details-row" id="nv-row" style="display:none;">
-                    <span><span class="text-bold">NV Phụ trách:</span> <span id="nhan-vien-phu-trach"></span></span>
-                    <span></span>
-                </div>
-
                 <div class="customer-details-row row-stack-on-receipt">
-                    <span></span>
+                    <!-- BỔ SUNG NHÂN VIÊN PHỤ TRÁCH -->
+                    <span id="nv-container" style="display:none;"><span class="text-bold">NV Phụ trách:</span> <span id="nhan-vien-phu-trach"></span></span>
                     <span><span class="text-bold">In Lúc:</span> <span id="print-time"></span></span>
                 </div>
             </div>
@@ -311,16 +300,29 @@
         async function convertImageToBase64(imgElement) { if (!imgElement || !imgElement.src || imgElement.src.startsWith('data:image')) { return; } const originalSrc = imgElement.src; const processBlob = (blob) => new Promise((resolve, reject) => { const reader = new FileReader(); reader.onloadend = () => { imgElement.src = reader.result; resolve(reader.result); }; reader.onerror = reject; reader.readAsDataURL(blob); }); try { const response = await fetch(originalSrc); if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`); await processBlob(await response.blob()); } catch (error) { console.warn(`Direct image fetch failed, trying proxy. Error: ${error.message}`); const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(originalSrc)}`; try { const proxyResponse = await fetch(proxyUrl); if (!proxyResponse.ok) throw new Error(`Proxy HTTP error! status: ${proxyResponse.status}`); await processBlob(await proxyResponse.blob()); } catch (proxyError) { console.error(`Failed to fetch image via proxy. Error: ${proxyError.message}`); } } }
         async function downloadPDF() { const element = document.querySelector('.bill-container'); const printOptionsPanel = document.querySelector('.print-options'); const orderNumber = document.getElementById('order-number').textContent || 'unknown'; const filename = `HoaDon-${orderNumber}.pdf`; printOptionsPanel.style.display = 'none'; document.body.classList.add('export-mode'); const allImages = Array.from(document.querySelectorAll('#logo-img, #qr-code-container img, #order-qr-code img')); await Promise.all(allImages.map(img => convertImageToBase64(img))); let jspdfConfig = { unit: 'mm', format: 'a4', orientation: 'portrait' }; if (document.body.classList.contains('format-a5')) { jspdfConfig = { unit: 'mm', format: 'a5', orientation: 'landscape' }; } else if (document.body.classList.contains('format-80mm')) { jspdfConfig = { unit: 'mm', format: [80, 297], orientation: 'portrait' }; } const opt = { margin: 0, filename: filename, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 3, useCORS: true, logging: false, backgroundColor: '#ffffff' }, jsPDF: jspdfConfig, pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } }; try { await html2pdf().from(element).set(opt).save(); } catch (error) { console.error("Error creating PDF:", error); alert("Đã có lỗi xảy ra khi tạo file PDF. Vui lòng thử lại."); } finally { document.body.classList.remove('export-mode'); printOptionsPanel.style.display = 'flex'; } }
         
-        // HÀM LẤY KEY TRẢ VỀ NGUYÊN BẢN CHỐNG LỖI
-        function getUrlParameter(name) { const urlParams = new URLSearchParams(window.location.search); return urlParams.get(name) || ''; }
-        
+        function getUrlParameter(keys) {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (typeof keys === 'string') keys = [keys];
+            
+            for (let key of keys) {
+                if (urlParams.has(key)) return urlParams.get(key) || '';
+            }
+            
+            for (let [k, v] of urlParams.entries()) {
+                let cleanK = k.toLowerCase().trim();
+                for (let key of keys) {
+                    if (cleanK === key.toLowerCase().trim()) return v || '';
+                }
+            }
+            return '';
+        }
+
         function cleanNumberString(s) { if (typeof s !== 'string') return String(s); return s.replace(/,/g, ''); }
         function getBankCodeFromName(bankName) { if (!bankName) return null; const bankMap = { 'vietinbank': '970415', 'vtb': '970415', 'vcb': '970436', 'vietcombank': '970436', 'bidv': '970418', 'agribank': '970405', 'mbbank': '970422', 'mb': '970422', 'techcombank': '970407', 'tcb': '970407', 'acb': '970416', 'vpbank': '970432', 'tpbank': '970423', 'sacombank': '970403', 'kienlongbank': '970452', 'klb': '970452' }; const formattedName = bankName.toLowerCase().replace(/\s/g, ''); return bankMap[formattedName] || null; }
         function formatCurrency(amount) { const cleanAmount = cleanNumberString(amount); if (cleanAmount === null || cleanAmount === '' || isNaN(cleanAmount)) return '0'; return parseInt(cleanAmount).toLocaleString('vi-VN'); }
         function formatDate(dateString) { if (!dateString) return new Date().toLocaleDateString('vi-VN'); try { const date = new Date(dateString); return isNaN(date) ? new Date().toLocaleDateString('vi-VN') : date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }); } catch (error) { return dateString; } }
         function numberToWords(numStr) { const num = parseInt(cleanNumberString(numStr), 10); if (isNaN(num) || num === null) return 'Không đồng'; if (num === 0) return 'Không đồng'; const ones = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'], tens = ['', 'mười', 'hai mươi', 'ba mươi', 'bốn mươi', 'năm mươi', 'sáu mươi', 'bảy mươi', 'tám mươi', 'chín mươi'], scales = ['', 'nghìn', 'triệu', 'tỷ']; function convertHundreds(n) { let result = ''; const h = Math.floor(n / 100), t = Math.floor((n % 100) / 10), o = n % 10; if (h > 0) { result += ones[h] + ' trăm'; } if (t > 0) { if (h > 0) result += ' '; if (t === 1) { result += 'mười'; if (o === 5) result += ' lăm'; else if (o > 0) result += ' ' + ones[o]; } else { result += tens[t]; if (o === 1) result += ' mốt'; else if (o === 5) result += ' lăm'; else if (o > 0) result += ' ' + ones[o]; } } else if (o > 0) { if (h > 0) result += ' linh '; result += ones[o]; } return result; } let result = '', scaleIndex = 0, n = num; while (n > 0) { const group = n % 1000; if (group > 0) { result = convertHundreds(group) + (scales[scaleIndex] ? ' ' + scales[scaleIndex] : '') + (result ? ' ' + result : ''); } n = Math.floor(n / 1000); scaleIndex++; } result = result.trim(); return result.charAt(0).toUpperCase() + result.slice(1) + ' đồng'; }
         
-        // --- NÂNG CẤP: HÀM DISPLAY PRODUCTS TỰ NHẬN DIỆN HÀNG TẶNG ---
         function displayProducts(productsJson) {
             const tbody = document.getElementById('products-list');
             tbody.innerHTML = '';
@@ -339,10 +341,8 @@
             }
             
             products.forEach((p, index) => {
-                // Nhận diện hàng khuyến mại: đơn giá = 0 hoặc thành tiền = 0
                 const isPromo = (parseFloat(p.dongia) === 0 || parseFloat(p.thanhtien) === 0);
                 
-                // Định dạng hiển thị nếu là hàng tặng
                 const sanPhamHtml = isPromo 
                     ? `${p.sanpham || ''} <span class="promo-badge">🎁 Quà tặng</span>`
                     : p.sanpham || '';
@@ -351,7 +351,7 @@
                 const thanhTienHtml = isPromo ? '0' : formatCurrency(p.thanhtien);
 
                 const row = document.createElement('tr');
-                if (isPromo) row.className = 'promo-row'; // Thêm class để CSS tô màu
+                if (isPromo) row.className = 'promo-row'; 
                 
                 row.innerHTML = `
                     <td class="col-stt">${index + 1}</td>
@@ -377,7 +377,6 @@
                 try { if (finalWebsite && finalWebsite.startsWith('{') && finalWebsite.endsWith('}')) { const websiteObj = JSON.parse(finalWebsite); finalWebsite = websiteObj.Url || finalWebsite; } } catch (e) {}
                 const bankCode = getBankCodeFromName(data.bankName);
                 
-                // GIỮ NGUYÊN CHỖ INFO CÔNG TY
                 document.getElementById('ten_cong_ty').textContent = data.tenCongTy || 'Tên Công Ty';
                 document.getElementById('dia_chi').textContent = data.diaChi || 'N/A'; 
                 document.getElementById('so_dien_thoai').textContent = data.soDienThoai || 'N/A'; 
@@ -395,17 +394,15 @@
                     websiteLink.href = fullUrl;
                 }
 
-                // DỮ LIỆU KHÁCH HÀNG 
                 document.getElementById('order-number').textContent = data.orderNumber || 'N/A'; 
                 document.getElementById('order-date').textContent = formatDate(data.orderDate); 
                 document.getElementById('customer-name').textContent = data.customerName || 'Khách lẻ';
                 
-                const phoneContainer = document.getElementById('phone-container');
-                if (data.customerPhone) {
+                if(data.customerPhone) {
                     document.getElementById('customer-phone').textContent = data.customerPhone;
-                    phoneContainer.style.display = 'inline';
+                    document.getElementById('phone-container').style.display = 'inline';
                 } else {
-                    phoneContainer.style.display = 'none';
+                    document.getElementById('phone-container').style.display = 'none';
                 }
 
                 const addressRow = document.querySelector('.customer-address-row');
@@ -416,15 +413,14 @@
                     addressRow.style.display = 'none';
                 }
 
-                const nvContainer = document.getElementById('nv-row');
-                if (data.employeeName) {
+                // HIỂN THỊ NHÂN VIÊN PHỤ TRÁCH
+                if(data.employeeName) {
                     document.getElementById('nhan-vien-phu-trach').textContent = data.employeeName;
-                    nvContainer.style.display = 'flex';
+                    document.getElementById('nv-container').style.display = 'inline';
                 } else {
-                    nvContainer.style.display = 'none';
+                    document.getElementById('nv-container').style.display = 'none';
                 }
                 
-                // DỮ LIỆU TÀI CHÍNH
                 document.getElementById('print-time').textContent = new Date().toLocaleString('vi-VN');
                 document.getElementById('subtotal').textContent = formatCurrency(data.subtotal) + ' VNĐ';
                 document.getElementById('discount').textContent = formatCurrency(data.discount) + ' VNĐ';
@@ -447,27 +443,27 @@
         }
 
         function loadDataFromUrl() {
-            // LẤY DỮ LIỆU CHUẨN XÁC 100% NHƯ CÔNG THỨC APPSHEET SẾP ĐANG CHẠY
             const data = {
-                orderNumber: getUrlParameter('so_don_hang'), 
-                orderDate: getUrlParameter('ngay_dat'), 
-                customerName: getUrlParameter('khach_hang'), 
-                customerPhone: getUrlParameter('sdt_khach_hang'), 
-                diaChiKhachHang: getUrlParameter('dia_chi_khach_hang'),
-                employeeName: getUrlParameter('ten_nguoi_lap'),
-                subtotal: getUrlParameter('thanh_tien'), 
-                discount: getUrlParameter('giam_gia'), 
-                totalAfterDiscount: getUrlParameter('tong_tien_sau_ck'),
-                notes: getUrlParameter('ghi_chu'), 
-                productsJson: getUrlParameter('products'), 
-                bankName: getUrlParameter('bank_name'), 
-                accountNumber: getUrlParameter('account_number'), 
-                accountHolder: getUrlParameter('account_holder'),
-                tenCongTy: getUrlParameter('ten_cong_ty'), 
-                diaChi: getUrlParameter('dia_chi'), 
-                soDienThoai: getUrlParameter('so_dien_thoai'), 
-                email: getUrlParameter('email'), 
-                website: getUrlParameter('website')
+                orderNumber: getUrlParameter(['Số đơn hàng', 'so_don_hang']), 
+                orderDate: getUrlParameter(['Ngày đặt', 'ngay_dat']), 
+                customerName: getUrlParameter(['Tên khách hàng', 'Khách hàng', 'ten_khach_hang']), 
+                customerPhone: getUrlParameter(['Số điện thoại', 'sdt_khach_hang']),
+                diaChiKhachHang: getUrlParameter(['Địa chỉ', 'dia_chi_khach_hang']),
+                employeeName: getUrlParameter(['Tên người lập', 'ten_nguoi_lap']), // LẤY DỮ LIỆU TỪ URL
+                
+                subtotal: getUrlParameter(['Thành tiền', 'thanh_tien']), 
+                discount: getUrlParameter(['Giảm giá', 'giam_gia']), 
+                totalAfterDiscount: getUrlParameter(['Tổng tiền sau ck', 'tong_tien_sau_ck']),
+                notes: getUrlParameter(['Ghi chú', 'ghi_chu']), 
+                productsJson: getUrlParameter(['Sản phẩm', 'products']), 
+                bankName: getUrlParameter(['Ngân hàng', 'bank_name']), 
+                accountNumber: getUrlParameter(['Số tài khoản', 'account_number']), 
+                accountHolder: getUrlParameter(['Chủ tài khoản', 'account_holder']),
+                tenCongTy: getUrlParameter(['Tên công ty', 'ten_cong_ty']), 
+                diaChi: getUrlParameter(['Địa chỉ công ty', 'dia_chi_cong_ty', 'dia_chi']), 
+                soDienThoai: getUrlParameter(['SĐT công ty', 'so_dien_thoai_cong_ty', 'so_dien_thoai']), 
+                email: getUrlParameter(['Email', 'email']), 
+                website: getUrlParameter(['Website', 'website'])
             };
             return populateInvoice(data);
         }
@@ -498,7 +494,8 @@
             const subtotal = 5700000; const discount = 200000; const totalAfterDiscount = subtotal - discount;
             const data = {
                 tenCongTy: 'CÔNG TY TNHH CHẾ BIẾN HẢI SẢN BA LÀNG', diaChi: 'Số 05, đường Đỗ Đại, TDP Thượng Hải, phường Tĩnh Gia, Thanh Hóa', soDienThoai: '0976459995', email: 'balangth@balang.com.vn', website: 'www.balang.com.vn',
-                orderNumber: 'DEMO-EMS-001', orderDate: new Date().toISOString(), customerName: 'Khách hàng Demo', customerPhone: '0988776655', diaChiKhachHang: '25/10 Hậu Giang, Phường 4, Quận Tân Bình, TP.HCM', employeeName: 'Trần Văn Demo',
+                orderNumber: 'DEMO-EMS-001', orderDate: new Date().toISOString(), customerName: 'Khách hàng Demo', customerPhone: '0988776655', diaChiKhachHang: '25/10 Hậu Giang, Phường 4, Quận Tân Bình, TP.HCM',
+                employeeName: 'Nguyễn Tấn Hiền',
                 subtotal: subtotal.toString(), discount: discount.toString(), totalAfterDiscount: totalAfterDiscount.toString(),
                 notes: 'MST: 0316870151. Đại diện pháp luật: Nguyễn Tấn Hiền.', productsJson: JSON.stringify(demoProducts),
                 bankName: 'ACB', accountNumber: '181119878', accountHolder: 'CONG TY TNHH GIAI PHAP SO EMS'
@@ -507,13 +504,11 @@
             return populateInvoice(data);
         }
         
-        // --- NÂNG CẤP: UPDATE UI CHO NÚT BẤM KHI ĐỔI FORMAT ---
         function changeFormat(format) {
             document.body.className = ''; 
             document.body.classList.add('format-' + format);
             if (format === 'a4-no-qr') { document.body.classList.add('format-a4'); }
             
-            // Xử lý Active Menu UI
             document.querySelectorAll('.format-btn').forEach(btn => btn.classList.remove('active'));
             const activeBtn = document.querySelector(`.btn-${format}`);
             if (activeBtn) activeBtn.classList.add('active');
